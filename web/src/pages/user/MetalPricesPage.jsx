@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchMetalPrices } from "../../api/metalApi.js";
 
-const Home = () => {
+const MetalPricesPage = () => {
     const [prices, setPrices] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -62,4 +62,4 @@ const styles = {
     },
 };
 
-export default Home;
+export default MetalPricesPage;

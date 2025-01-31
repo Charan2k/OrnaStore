@@ -1,13 +1,41 @@
 // server.js
 const express = require("express");
-const app = express();
-const routes = require("./routes"); // Import all routes
+const dotenv = require("dotenv");
+const cors = require("cors");
+const {metalPricesCronJob} = require("./cron/metalPricesCronJob.js");
+const sequelize = require("./config/database.js");
 
+dotenv.config(); // Load environment variables from .env file
+
+const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-app.use("/api", routes.testRoutes);
+const routes = require("./routes");
+app.use("/api", [...Object.values(routes)]);
 
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Sync the database and start the server
+const startServer = async () => {
+    try {
+        // Sync the database
+        await sequelize.sync({ alter: false, force: false }); // Sync DB with tables
+        console.log("Database synced successfully!");
 
-module.exports = app;
+        // Start the cron job(s)
+        if (process.env.CRON_JOB_ENABLED === "true") {
+			metalPricesCronJob();
+        }
+
+        // Start the Express server
+        const PORT = process.env.PORT || 8000;
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("Error starting the server:", error);
+        process.exit(1); // Exit if there's an error during setup
+    }
+};
+
+startServer();
