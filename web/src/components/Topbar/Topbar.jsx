@@ -8,11 +8,15 @@ const Topbar = ({ title, onLogout }) => {
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     {title}
                 </Typography>
-                <Box>
-                    <Button color="inherit" onClick={onLogout}>
-                        Logout
-                    </Button>
-                </Box>
+                {
+                    (onLogout) ?
+                    <Box>
+                        <Button color="inherit" onClick={onLogout}>
+                            Logout
+                        </Button>
+                    </Box> :
+                    <Box></Box>
+                }
             </Toolbar>
         </AppBar>
     );

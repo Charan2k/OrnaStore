@@ -13,7 +13,6 @@ const Admin = sequelize.define("Admin", {
         allowNull: false,
     },
     role: {
-        // owner can manage admins & ornaments, manager can manage ornaments, contributor can manage their own ornaments
         type: DataTypes.ENUM("owner", "manager", "contributor"), 
         allowNull: false,
         defaultValue: "contributor",

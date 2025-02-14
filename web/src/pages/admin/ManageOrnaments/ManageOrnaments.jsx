@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { fetchOrnaments } from "../../../api/ornamentsApi.js";
 import { deleteOrnament } from "../../../api/adminApi.js";
-import { useSelector } from "react-redux";
-import { 
-    Card, CardMedia, CardContent, Typography, Button, 
-    Box, Pagination, TextField, MenuItem, Select, 
-    InputLabel, FormControl, Stack, Divider 
+import { useSelector, useDispatch } from "react-redux";
+import {
+    Card,
+    CardMedia,
+    CardContent,
+    Typography,
+    Button,
+    Box,
+    Pagination,
+    TextField,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
+    Stack,
+    Divider,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import ManIcon from "@mui/icons-material/Man";
+import WomanIcon from "@mui/icons-material/Woman";
+import WcIcon from "@mui/icons-material/Wc";
 import { styled } from "@mui/system";
 import getAdminToken from "../../../utils/getAdminToken.js";
+import adminLogout from "../../../utils/adminLogout.js";
 
 const SearchContainer = styled(Box)({
     display: "flex",
@@ -39,6 +54,7 @@ const CardDetails = styled(CardContent)({
 });
 
 const ManageOrnaments = ({ setActivePage }) => {
+    const dispatch = useDispatch();
     const [ornaments, setOrnaments] = useState([]);
     const [filteredOrnaments, setFilteredOrnaments] = useState([]);
     const [page, setPage] = useState(1);
@@ -46,6 +62,7 @@ const ManageOrnaments = ({ setActivePage }) => {
     const [search, setSearch] = useState("");
     const [filterOrnamentType, setFilterOrnamentType] = useState("");
     const [filterMetalType, setFilterMetalType] = useState("");
+    const pageSize = 10;
 
     const userRole = useSelector((state) => state.CURRENT_ADMIN_ROLE);
     const userId = useSelector((state) => state.CURRENT_ADMIN_ID);
@@ -53,35 +70,42 @@ const ManageOrnaments = ({ setActivePage }) => {
     useEffect(() => {
         const loadOrnaments = async () => {
             try {
-                const response = await fetchOrnaments(page, 6);
+                dispatch({ type: "SET_SPINNER", payload: true });
+                const response = await fetchOrnaments(page, pageSize);
                 const processedOrnaments = response.data.ornaments.map((ornament) => {
                     if (ornament.image && ornament.image.data) {
-                        const base64String = btoa(
-                            String.fromCharCode(...new Uint8Array(ornament.image.data))
-                        );
+                        const base64String = btoa(String.fromCharCode(...new Uint8Array(ornament.image.data)));
                         return { ...ornament, image: `data:image/jpeg;base64,${base64String}` };
                     }
                     return ornament;
                 });
 
                 setOrnaments(processedOrnaments);
-                setTotalPages(response.data.totalPages);
                 setFilteredOrnaments(processedOrnaments);
+                setTotalPages(Math.floor(processedOrnaments.length / pageSize) + 1);
             } catch (error) {
+                adminLogout(error);
                 console.error("Error fetching ornaments:", error);
+            } finally {
+                dispatch({ type: "SET_SPINNER", payload: false });
             }
         };
         loadOrnaments();
-    }, [page]);
+    }, [dispatch, page]);
 
     const handleDelete = async (id, adminId) => {
         if (userRole === "owner" || userRole === "manager" || (userRole === "contributor" && userId === adminId)) {
             try {
+                dispatch({ type: "SET_SPINNER", payload: true });
                 await deleteOrnament(getAdminToken(), id);
                 setOrnaments(ornaments.filter((item) => item.id !== id));
                 setFilteredOrnaments(filteredOrnaments.filter((item) => item.id !== id));
+                setTotalPages(Math.floor(filteredOrnaments.length / pageSize) + 1);
             } catch (error) {
+                adminLogout(error);
                 console.error("Error deleting ornament:", error);
+            } finally {
+                dispatch({ type: "SET_SPINNER", payload: false });
             }
         } else {
             alert("You do not have permission to delete this ornament.");
@@ -92,36 +116,23 @@ const ManageOrnaments = ({ setActivePage }) => {
         let results = ornaments;
 
         if (search) {
-            results = results.filter(ornament =>
-                ornament.name.toLowerCase().includes(search.toLowerCase())
-            );
+            results = results.filter((ornament) => ornament.name.toLowerCase().includes(search.toLowerCase()));
         }
 
         if (filterOrnamentType) {
-            results = results.filter(ornament => ornament.ornamentType === filterOrnamentType);
+            results = results.filter((ornament) => ornament.ornamentType === filterOrnamentType);
         }
 
         if (filterMetalType) {
-            results = results.filter(ornament => ornament.metalType === filterMetalType);
+            results = results.filter((ornament) => ornament.metalType === filterMetalType);
         }
 
         setFilteredOrnaments(results);
+        setTotalPages(Math.floor(results.length / pageSize) + 1);
     }, [search, filterOrnamentType, filterMetalType, ornaments]);
 
     return (
         <Box sx={{ p: 3 }}>
-            {(userRole === "owner" || userRole === "manager" || userRole === "contributor") && (
-                <Box display="flex" justifyContent="flex-end" mb={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setActivePage("add-ornaments")}
-                    >
-                        Add New Ornament
-                    </Button>
-                </Box>
-            )}
-
             <SearchContainer>
                 <TextField
                     variant="outlined"
@@ -163,32 +174,68 @@ const ManageOrnaments = ({ setActivePage }) => {
                         <MenuItem value="silver">Silver</MenuItem>
                     </Select>
                 </FormControl>
+                {(userRole === "owner" || userRole === "manager" || userRole === "contributor") && (
+                    <Box display="flex" justifyContent="flex-end" mt={2.3} mb={2}>
+                        <Button variant="contained" color="primary" onClick={() => setActivePage("add-ornaments")}>
+                            Add New Ornament
+                        </Button>
+                    </Box>
+                )}
             </SearchContainer>
 
-            <Box display="grid" gridTemplateColumns="repeat(auto-fill, minmax(300px, 1fr))" gap={3}>
+            <Box display="flex" flexWrap="wrap" justifyContent="space-around" gap={8} pt={3}>
                 {filteredOrnaments.map((ornament) => (
-                    <CardStyled key={ornament.id}>
-                        <CardMedia component="img" height="220" image={ornament.image} alt={ornament.name} />
-                        <CardDetails>
-                            <Typography variant="h6" fontWeight="bold">{ornament.name}</Typography>
+                    <CardStyled
+                        key={ornament.id}
+                        sx={{ width: "280px", maxWidth: "100%", boxShadow: 3, borderRadius: "12px" }}
+                    >
+                        <CardMedia
+                            component="img"
+                            height="220"
+                            image={ornament.image}
+                            alt={ornament.name}
+                            sx={{ borderTopLeftRadius: "12px", borderTopRightRadius: "12px" }}
+                        />
+                        <CardDetails sx={{ padding: "16px" }}>
+                            <Stack direction="row" justifyContent="space-between" mt={1}>
+                                <Typography variant="h6" fontWeight="bold">
+                                    {ornament.name}
+                                </Typography>
+                                <Typography variant="h6" pt={0.8} fontWeight="bold">
+                                    {ornament.category === "male" ? (
+                                        <ManIcon />
+                                    ) : ornament.category === "female" ? (
+                                        <WomanIcon />
+                                    ) : ornament.category === "both" ? (
+                                        <WcIcon />
+                                    ) : null}
+                                </Typography>
+                            </Stack>
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                                 {ornament.description}
                             </Typography>
 
                             <Stack direction="row" justifyContent="space-between" mt={1}>
-                                <Typography variant="body2"><strong>Type:</strong> {ornament.ornamentType}</Typography>
-                                <Typography variant="body2"><strong>Metal:</strong> {ornament.metalType}</Typography>
+                                <Typography variant="body2">
+                                    <strong>Type:</strong> {ornament.ornamentType}
+                                </Typography>
+                                <Typography variant="body2">
+                                    <strong>Metal:</strong> {ornament.metalType}
+                                </Typography>
                             </Stack>
 
                             <Divider sx={{ my: 1 }} />
 
-                            {(userRole === "owner" || userRole === "manager" || (userRole === "contributor" && userId === ornament.adminId)) && (
+                            {(userRole === "owner" ||
+                                userRole === "manager" ||
+                                (userRole === "contributor" && userId === ornament.adminId)) && (
                                 <Box display="flex" justifyContent="center" mt={1}>
                                     <Button
                                         variant="contained"
                                         color="error"
                                         size="small"
                                         onClick={() => handleDelete(ornament.id, ornament.adminId)}
+                                        sx={{ borderRadius: "8px", fontSize: "14px", px: 2 }}
                                     >
                                         Delete
                                     </Button>
@@ -198,7 +245,6 @@ const ManageOrnaments = ({ setActivePage }) => {
                     </CardStyled>
                 ))}
             </Box>
-
             <Box mt={3} display="flex" justifyContent="center">
                 <Pagination count={totalPages} page={page} onChange={(e, value) => setPage(value)} color="primary" />
             </Box>

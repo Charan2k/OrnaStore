@@ -4,11 +4,14 @@ import Cropper from "react-easy-crop";
 import getCroppedImg from "../../../utils/cropImage.js";
 import { addOrnament } from "../../../api/adminApi.js";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { useDispatch } from "react-redux";
+import adminLogout from "../../../utils/adminLogout.js";
 
 const CROP_WIDTH = 300;
 const CROP_HEIGHT = 300;
 
 const AddOrnament = () => {
+    const dispatch = useDispatch();
     const [formData, setFormData] = useState({
         ornamentName: "",
         category: "",
@@ -84,6 +87,7 @@ const AddOrnament = () => {
         });
     
         try {
+            dispatch({ type: "SET_SPINNER", payload: true });
             const response = await addOrnament(formDataObj, token);
             if (response.status === 201 || response.status === 200) {
                 alert("Ornament added successfully!");
@@ -100,8 +104,10 @@ const AddOrnament = () => {
                 setError("Unexpected response from the server. Please try again.");
             }
         } catch (err) {
+            adminLogout(err);
             setError("Something went wrong. Try again.");
         } finally {
+            dispatch({ type: "SET_SPINNER", payload: false });
             setLoading(false);
         }
     };
@@ -145,6 +151,7 @@ const AddOrnament = () => {
                 >
                     <MenuItem value="male">Male</MenuItem>
                     <MenuItem value="female">Female</MenuItem>
+                    <MenuItem value="both">Both</MenuItem>
                 </TextField>
                 <TextField
                     select

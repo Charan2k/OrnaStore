@@ -14,7 +14,7 @@ const OrnamentItem = sequelize.define(
             allowNull: false,
         },
         category: {
-            type: DataTypes.ENUM("male", "female"),
+            type: DataTypes.ENUM("male", "female", "both"),
             allowNull: false,
         },
         ornamentType: {
