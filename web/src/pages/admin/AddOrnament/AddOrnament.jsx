@@ -137,6 +137,8 @@ const AddOrnament = () => {
                     value={formData.ornamentName}
                     onChange={handleChange}
                     required
+                    color="warning"
+                    size="small"
                     margin="normal"
                 />
                 <TextField
@@ -147,6 +149,8 @@ const AddOrnament = () => {
                     value={formData.category}
                     onChange={handleChange}
                     required
+                    color="warning"
+                    size="small"
                     margin="normal"
                 >
                     <MenuItem value="male">Male</MenuItem>
@@ -161,10 +165,12 @@ const AddOrnament = () => {
                     value={formData.metalType}
                     onChange={handleChange}
                     required
+                    color="warning"
+                    size="small"
                     margin="normal"
                 >
-                    <MenuItem value="gold">gold</MenuItem>
-                    <MenuItem value="silver">silver</MenuItem>
+                    <MenuItem value="gold">Gold</MenuItem>
+                    <MenuItem value="silver">Silver</MenuItem>
                 </TextField>
 
                 <TextField
@@ -175,6 +181,8 @@ const AddOrnament = () => {
                     value={formData.type}
                     onChange={handleChange}
                     required
+                    color="warning"
+                    size="small"
                     margin="normal"
                 >
                     <MenuItem value="chain">Chain</MenuItem>
@@ -190,10 +198,12 @@ const AddOrnament = () => {
                     required
                     multiline
                     rows={3}
+                    size="small"
+                    color="warning"
                     margin="normal"
                 />
 
-                <Button component="label" variant="contained" startIcon={<CloudUploadIcon />} fullWidth sx={{ mt: 2 }}>
+                <Button color="success" component="label" variant="contained" startIcon={<CloudUploadIcon />} fullWidth sx={{ mt: 2 }}>
                     Upload Image
                     <input type="file" accept="image/*" hidden onChange={handleFileChange} />
                 </Button>
@@ -209,7 +219,7 @@ const AddOrnament = () => {
                             onZoomChange={setZoom}
                             onCropComplete={handleCropComplete}
                         />
-                        <Button onClick={handleCropImage} variant="contained" sx={{ mt: 2 }}>
+                        <Button onClick={handleCropImage} color="success" variant="contained" sx={{ mt: 2 }}>
                             Crop Image
                         </Button>
                     </Box>
@@ -221,7 +231,7 @@ const AddOrnament = () => {
                     </Card>
                 )}
 
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+                <Button  type="submit" variant="contained" color="success" fullWidth sx={{ mt: 2 }} disabled={loading}>
                     {loading ? "Uploading..." : "Add Ornament"}
                 </Button>
             </form>

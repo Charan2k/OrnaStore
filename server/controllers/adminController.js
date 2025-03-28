@@ -65,7 +65,7 @@ const deleteOrnamentItem = async (req, res) => {
         const ornament = await OrnamentItem.findByPk(id);
         if (!ornament) return res.status(404).json({ error: "Ornament item not found" });
 
-        if (admin.role === "owner" || admin.role === "manager") {
+        if (admin.role === "owner" || admin.role === "manager" || ornament.adminId===req.admin.id) {
             await ornament.destroy();
             return res.json({ message: "Ornament item deleted successfully" });
         }

@@ -39,22 +39,26 @@ const AdminLogin = () => {
             <form onSubmit={handleSubmit}>
                 <TextField
                     fullWidth
+                    size="small"
                     label="Email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    color="warning"
                     margin="normal"
                 />
 
                 <TextField
                     fullWidth
                     label="Password"
+                    size="small"
                     name="password"
                     type={showPassword ? "text" : "password"}
                     value={formData.password}
                     onChange={handleChange}
+                    color="warning"
                     required
                     margin="normal"
                     InputProps={{
@@ -68,7 +72,7 @@ const AdminLogin = () => {
                     }}
                 />
 
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>
+                <Button type="submit" variant="contained" color="warning" fullWidth sx={{ mt: 2 }} disabled={loading}>
                     {loading ? <CircularProgress size={24} /> : "Login"}
                 </Button>
             </form>

@@ -137,28 +137,33 @@ const ManageAdmins = () => {
 
     return (
         <Box p={3}>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Paper
+                elevation={0}
+                sx={{ p: 1, mb: 0.2, display: "flex", justifyContent: "space-between", alignItems: "center" }}
+            >
                 <TextField
                     label="Search Admins"
                     variant="outlined"
                     size="small"
                     onChange={(e) => setSearch(e.target.value)}
+                    color="warning"
                 />
                 {role === "owner" && (
-                    <Button variant="contained" startIcon={<Add />} onClick={() => handleOpen()}>
+                    <Button size="medium" variant="contained" startIcon={<Add />} onClick={() => handleOpen()} color="success">
                         Add Admin
                     </Button>
                 )}
-            </Box>
-
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
+            </Paper>
+            <TableContainer autoSave="true" component={Paper}>
+                <Table size="small">
+                    <TableHead sx={{ height: "50px" }}>
                         <TableRow>
-                            <TableCell>ID</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Role</TableCell>
-                            <TableCell align="right">Actions</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>ID</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>Role</TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }} align="right">
+                                Actions
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -200,6 +205,7 @@ const ManageAdmins = () => {
                     <TextField label="ID" fullWidth sx={{ mb: 2 }} value={selectedAdmin?.id} disabled />
                     <TextField
                         label="Email"
+                        color="warning"
                         fullWidth
                         sx={{ mb: 2 }}
                         value={selectedAdmin?.email}
@@ -209,6 +215,7 @@ const ManageAdmins = () => {
                         label="Password"
                         type="password"
                         hidden="true"
+                        color="warning"
                         fullWidth
                         sx={{ mb: 2 }}
                         value={selectedAdmin?.password}
@@ -217,6 +224,7 @@ const ManageAdmins = () => {
                     <TextField
                         label="Role"
                         fullWidth
+                        color="warning"
                         select
                         sx={{ mb: 2 }}
                         value={selectedAdmin?.role || ""}
@@ -230,8 +238,8 @@ const ManageAdmins = () => {
                     </TextField>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button variant="contained" onClick={handleSave}>
+                    <Button color="inherit" onClick={handleClose}>Cancel</Button>
+                    <Button color="success" variant="contained" onClick={handleSave}>
                         {selectedAdmin?.id ? "Save Changes" : "Add Admin"}
                     </Button>
                 </DialogActions>
@@ -243,7 +251,7 @@ const ManageAdmins = () => {
                     <Typography>Are you sure you want to delete this admin?</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
+                    <Button color="inherit" onClick={() => setConfirmDelete(false)}>Cancel</Button>
                     <Button variant="contained" color="error" onClick={confirmDeleteAdmin}>
                         Delete
                     </Button>
