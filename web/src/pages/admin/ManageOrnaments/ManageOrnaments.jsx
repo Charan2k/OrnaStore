@@ -140,6 +140,7 @@ const ManageOrnaments = ({ setActivePage }) => {
                     placeholder="Search ornaments..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    color="warning"
                     InputProps={{
                         startAdornment: <SearchIcon sx={{ mr: 1 }} />,
                     }}
@@ -153,6 +154,7 @@ const ManageOrnaments = ({ setActivePage }) => {
                         onChange={(e) => setFilterOrnamentType(e.target.value)}
                         label="Ornament Type"
                         size="small"
+                        color="warning"
                     >
                         <MenuItem value="">All</MenuItem>
                         <MenuItem value="chain">Chain</MenuItem>
@@ -168,6 +170,7 @@ const ManageOrnaments = ({ setActivePage }) => {
                         onChange={(e) => setFilterMetalType(e.target.value)}
                         label="Metal Type"
                         size="small"
+                        color="warning"
                     >
                         <MenuItem value="">All</MenuItem>
                         <MenuItem value="gold">Gold</MenuItem>
@@ -176,7 +179,7 @@ const ManageOrnaments = ({ setActivePage }) => {
                 </FormControl>
                 {(userRole === "owner" || userRole === "manager" || userRole === "contributor") && (
                     <Box display="flex" justifyContent="flex-end" mt={2.3} mb={2}>
-                        <Button variant="contained" color="primary" onClick={() => setActivePage("add-ornaments")}>
+                        <Button variant="contained" color="success" onClick={() => setActivePage("add-ornaments")}>
                             Add New Ornament
                         </Button>
                     </Box>

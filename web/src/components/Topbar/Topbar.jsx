@@ -1,22 +1,54 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Box, IconButton } from "@mui/material";
+import { AppBarColor } from "../../constants/colors.js";
 
-const Topbar = ({ title, onLogout }) => {
+const Topbar = ({ title, onLogout, bgColor, menuButtons = [] }) => {
     return (
-        <AppBar position="fixed" sx={{ width: "100%", boxShadow: 1, zIndex: 1100 }} >
-            <Toolbar>
-                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+        <AppBar
+            position="fixed"
+            sx={{
+                width: "100%",
+                boxShadow: 2,
+                zIndex: 1100,
+                backgroundColor: bgColor ?? AppBarColor,
+                paddingX: 2,
+            }}
+        >
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+                {/* Title */}
+                <Typography variant="h6" sx={{ fontWeight: "bold", letterSpacing: "0.8px" }}>
                     {title}
                 </Typography>
-                {
-                    (onLogout) ?
-                    <Box>
-                        <Button color="inherit" onClick={onLogout}>
-                            Logout
+
+                {/* Menu Buttons */}
+                <Box sx={{ display: "flex", gap: 1 }}>
+                    {menuButtons.map((btn, index) => (
+                        <Button
+                            key={index}
+                            color="inherit"
+                            onClick={btn.onClick}
+                            startIcon={btn.icon || null} // Supports optional icons
+                            sx={{
+                                fontWeight: "500",
+                                textTransform: "none",
+                                letterSpacing: "0.5px",
+                                transition: "0.3s",
+                                "&:hover": {
+                                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                                },
+                            }}
+                        >
+                            {btn.label}
                         </Button>
-                    </Box> :
-                    <Box></Box>
-                }
+                    ))}
+                </Box>
+
+                {/* Logout Button */}
+                {onLogout && (
+                    <IconButton color="inherit" onClick={onLogout} sx={{ ml: 2 }}>
+                        Logout
+                    </IconButton>
+                )}
             </Toolbar>
         </AppBar>
     );

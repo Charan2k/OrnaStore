@@ -10,7 +10,7 @@ import OrnamentDetails from "../pages/user/Ornaments/OrnamentDetails.jsx";
 const userRoutes = [
     <Route path="/" element={<Home />} />,
     <Route path="/ornaments" element={<OrnamentSelection />} />,
-    <Route path="/ornaments/:category" element={<Ornaments />} />,
+    <Route path="/ornaments/:category/:metalType/:ornamentType" element={<Ornaments />} />,
     <Route path="/ornament/:id" element={<OrnamentDetails />} />,
     // <Route path="/ornaments" element={<Provider store={Store}><Ornaments /></Provider>} />,
 ];

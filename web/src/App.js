@@ -3,11 +3,14 @@ import React from "react";
 import { BrowserRouter as Router, Routes } from "react-router-dom";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import "./App.css";
 
 function App() {
     return (
-        <Router>
-            <div className="App">
+        <div
+            className="App"
+        >
+            <Router>
                 <Routes>
                     {/* User Routes */}
                     {userRoutes}
@@ -15,8 +18,8 @@ function App() {
                     {/* Admin Routes */}
                     {adminRoutes}
                 </Routes>
-            </div>
-        </Router>
+            </Router>
+        </div>
     );
 }
 
