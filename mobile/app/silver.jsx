@@ -1,13 +1,29 @@
 // app/silver.jsx
-import React from "react";
-import { Text, View, Button } from "react-native";
+import React, { useState } from "react";
+import { View, Text } from "react-native";
 import { useRouter } from "expo-router";
-import InfiniteTilesPage from "../components/InfiniteTilesPage"
+import InfiniteTilesPage from "../components/InfiniteTilesPage";
+import FilterBar from "../components/FilterBar";
+import { JewelryItem } from "../types";
+import theme from "../theme/colors";
 
 export default function Silver() {
     const router = useRouter();
+    const [filters, setFilters] = useState({
+      gender: null,
+      category: null
+    });
+
     const silverItems = [
-        { id: 1, name: "Silver Ring", description: "A beautiful silver ring", imageUrl: "https://images.unsplash.com/photo-1608471535884-4f4effeed5e7" },
+        { 
+          id: 1, 
+          name: "Silver Ring", 
+          description: "A beautiful silver ring", 
+          imageUrl: "https://images.unsplash.com/photo-1608471535884-4f4effeed5e7",
+          gender: 'Men',
+          category: 'Ring',
+          material: 'Silver'
+        },
         { id: 2, name: "Silver Necklace", description: "Elegant silver necklace", imageUrl: "https://images.unsplash.com/photo-1608471535884-4f4effeed5e7" },
         { id: 3, name: "Silver Earrings", description: "Stylish silver earrings", imageUrl: "https://images.unsplash.com/photo-1608471535884-4f4effeed5e7" },
         { id: 4, name: "Silver Bracelet", description: "Classic silver bracelet", imageUrl: "https://images.unsplash.com/photo-1608471535884-4f4effeed5e7" },
@@ -46,9 +62,19 @@ export default function Silver() {
     ];
 
     return (
-        <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 10 }}>Silver Items</Text>
-            <InfiniteTilesPage items={silverItems} />
+        <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+            <Text style={[theme.typography.header, { 
+                marginVertical: theme.spacing.screenMargin,
+                borderBottomWidth: 1,
+                borderBottomColor: theme.colors.border,
+                paddingBottom: theme.spacing.elementPadding
+            }]}>Silver Items</Text>
+            <FilterBar filters={filters} setFilters={setFilters} />
+            <InfiniteTilesPage items={silverItems.filter(item => {
+              const genderMatch = !filters.gender || item.gender === filters.gender;
+              const categoryMatch = !filters.category || item.category === filters.category;
+              return genderMatch && categoryMatch;
+            })} />
             {/* <Button title="Back to Home" onPress={() => router.push("/")} /> */}
         </View>
     );

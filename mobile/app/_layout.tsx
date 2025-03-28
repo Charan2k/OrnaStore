@@ -5,6 +5,7 @@ import GoldScreen from './gold';
 import SilverScreen from './silver';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, Text, StyleSheet } from 'react-native';
+import theme from '../theme/colors';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -12,18 +13,19 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: theme.colors.border,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: theme.colors.primary,
   },
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
   }
 });
 
