@@ -1,9 +1,8 @@
-import axios from "axios";
-import API from "./apiConfigs.js";
+import { axiosInstance, API } from "./apiConfigs";
 
 const fetchMetalPrices = async () => {
     try {
-        const response = await axios.get(API.METAL); 
+        const response = await axiosInstance.get(API.METAL);
         return response.data; 
     } catch (error) {
         console.error("Error fetching metal prices:", error);

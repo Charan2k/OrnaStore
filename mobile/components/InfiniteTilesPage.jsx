@@ -1,5 +1,6 @@
 // app/InfiniteTilesPage.jsx
 import React, { useState, useEffect } from "react";
+import { fetchOrnaments } from "../api/ornamentsApi";
 import { FlatList, View, Text, StyleSheet, Image } from "react-native";
 
 export default function InfiniteTilesPage({ items: demoItems }) {
@@ -11,25 +12,38 @@ export default function InfiniteTilesPage({ items: demoItems }) {
 
     // TODO: {items} to be fetched from API based on context
 
-    const fetchItems = () => {
+    const fetchItems = async () => {
         if (loading || !hasMore) return;
 
         setLoading(true);
-        setTimeout(() => {
-            const newItems = demoItems.slice((page - 1) * 9, page * 9);
-            if (newItems.length > 0) {
-                setItems((prevItems) => [...prevItems, ...newItems]);
-                setPage((prevPage) => prevPage + 1);
+        try {
+            const response = await fetchOrnaments(page, 9);
+            if (response.data && response.data.length > 0) {
+                setItems(prevItems => [...prevItems, ...response.data]);
+                setPage(prevPage => prevPage + 1);
             } else {
-                setHasMore(false); // No more items to fetch
+                setHasMore(false);
             }
+        } catch (error) {
+            console.error('Error fetching ornaments:', error);
+            // Fallback to demo items if API fails and we have them
+            if (demoItems && demoItems.length > 0 && items.length === 0) {
+                setItems(demoItems.slice(0, 9));
+                setPage(2);
+            }
+        } finally {
             setLoading(false);
-        }, 1000); // Simulate delay
+        }
     };
 
     useEffect(() => {
-        fetchItems(); // Fetch demo items on load
-    }, []);
+        if (demoItems && demoItems.length > 0) {
+            setItems(demoItems.slice(0, 9));
+            setPage(2);
+        } else {
+            fetchItems(); // Fallback to API if no demo items
+        }
+    }, [demoItems]);
 
     const renderItem = ({ item }) => (
         <View style={styles.tile}>
