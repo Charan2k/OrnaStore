@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, ActivityIndicator, Share, ScrollView, Pressable, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, ActivityIndicator, Share, ScrollView, Pressable, Linking, Platform } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { fetchOrnaments } from '../../api/ornamentsApi';
 import { Buffer } from 'buffer';
 import theme from '../../theme/colors';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as ScreenCapture from 'expo-screen-capture';
 
 const styles = StyleSheet.create({
   container: {
@@ -92,6 +93,50 @@ export default function ItemDetailsScreen() {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Prevent screenshots when component mounts
+    const preventScreenshots = async () => {
+      try {
+        // For iOS, we need to be more aggressive with the prevention
+        if (Platform.OS === 'ios') {
+          // First, check if we can prevent screenshots
+          const isAvailable = await ScreenCapture.isAvailableAsync();
+          if (isAvailable) {
+            // Prevent screenshots
+            await ScreenCapture.preventScreenCaptureAsync();
+            
+            // Add a listener for when the app goes to background
+            const subscription = ScreenCapture.addScreenshotListener(() => {
+              // This will be called when a screenshot is attempted
+              console.log('Screenshot attempted');
+            });
+            
+            // Return the subscription for cleanup
+            return subscription;
+          }
+        } else {
+          // For Android, the standard approach works well
+          await ScreenCapture.preventScreenCaptureAsync();
+        }
+      } catch (error) {
+        console.error('Error preventing screenshots:', error);
+      }
+    };
+    
+    const subscription = preventScreenshots();
+
+    // Cleanup: allow screenshots when component unmounts
+    return () => {
+      if (Platform.OS === 'ios') {
+        // For iOS, we need to remove the listener and allow screenshots
+        if (subscription) {
+          subscription.remove();
+        }
+      }
+      ScreenCapture.allowScreenCaptureAsync();
+    };
+  }, []);
 
   useEffect(() => {
     const fetchItem = async () => {
