@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, View, Text, StyleSheet, Image } from 'react-native';
+import { FlatList, View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { router } from 'expo-router';
 import { fetchOrnaments } from '../api/ornamentsApi';
 import { Buffer } from 'buffer';
 import theme from '../theme/colors';
@@ -68,7 +69,6 @@ export default function InfiniteTilesPage({ metalType }) {
       return item;
       });
 
-      console.log(response);
       
       if (newItems.length > 0) {
         setItems(prev => [...prev, ...newItems]);
@@ -88,11 +88,18 @@ export default function InfiniteTilesPage({ metalType }) {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.tile}>
+    <Pressable 
+      style={styles.tile}
+      onPress={() =>{
+        console.log("clicked");
+        console.log(`${item.id}`);
+        router.push(`/item/${item.id}`)
+      }}
+    >
       <Image source={{ uri: item.imageBase64 }} style={styles.image} />
       <Text style={styles.itemTitle}>{item.name}</Text>
       <Text style={{ color: theme.colors.text }}>{item.description}</Text>
-    </View>
+    </Pressable>
   );
 
   if (error) {
