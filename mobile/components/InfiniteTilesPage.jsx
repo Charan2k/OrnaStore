@@ -5,6 +5,7 @@ import { fetchOrnaments } from '../api/ornamentsApi';
 import { Buffer } from 'buffer';
 import theme from '../theme/colors';
 import FilterBar from './FilterBar';
+import NoItemsFound from './NoItemsFound';
 
 const styles = StyleSheet.create({
   container: {
@@ -59,26 +60,6 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   }
 });
-
-const NoItemsFound = ({ filters }) => {
-  const getFilterDescription = () => {
-    const parts = [];
-    if (filters.gender) parts.push(filters.gender);
-    if (filters.ornamentType) parts.push(filters.ornamentType);
-    return parts.join(' ');
-  };
-
-  return (
-    <View style={styles.noItemsContainer}>
-      <Text style={styles.noItemsText}>No items found</Text>
-      <Text style={styles.noItemsSubtext}>
-        {getFilterDescription() ? 
-          `No ${getFilterDescription()} items available at the moment.` :
-          'No items available at the moment.'}
-      </Text>
-    </View>
-  );
-};
 
 const ErrorView = ({ error, onRetry }) => {
   return (
@@ -220,7 +201,13 @@ export default function InfiniteTilesPage({ metalType }) {
         metalType={metalType}
       />
       {items.length === 0 && !loading ? (
-        <NoItemsFound filters={filters} />
+        <NoItemsFound 
+          message={
+            filters.ornamentType 
+              ? `No ${filters.ornamentType} items found${filters.gender ? ` for ${filters.gender}` : ''}`
+              : 'No items found for the selected filters'
+          }
+        />
       ) : (
         <FlatList
           data={items}
