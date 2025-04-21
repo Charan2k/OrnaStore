@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import InfiniteTilesPage from '../components/InfiniteTilesPage';
-import theme from '../theme/colors';
+import InfiniteTilesPage from '../../components/InfiniteTilesPage';
+import theme from '../../theme/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,10 +10,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function SilverScreen() {
+export default function GoldScreen() {
   return (
     <View style={styles.container}>
-      <InfiniteTilesPage metalType="silver" />
+      <InfiniteTilesPage metalType="gold" />
     </View>
   );
 }

@@ -4,11 +4,11 @@ import { router } from 'expo-router';
 import { fetchOrnaments } from '../api/ornamentsApi';
 import { Buffer } from 'buffer';
 import theme from '../theme/colors';
+import FilterBar from './FilterBar';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: theme.colors.background
   },
   row: {
@@ -47,32 +47,42 @@ export default function InfiniteTilesPage({ metalType }) {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [error, setError] = useState(null);
+  const [filters, setFilters] = useState({
+    gender: '',
+    ornamentType: ''
+  });
 
-  const fetchItems = async () => {
-    if (loading || !hasMore) return;
+  const fetchItems = async (reset = false) => {
+    if (loading || (!hasMore && !reset)) return;
     
     setLoading(true);
     try {
-      const response = await fetchOrnaments(page, 10, '', '', '', metalType);
+      const response = await fetchOrnaments(
+        reset ? 1 : page,
+        10,
+        filters.gender,
+        '',
+        filters.ornamentType,
+        metalType
+      );
       const rawItems = response.data.ornaments || [];
 
-    // Convert image buffer to base64
+      // Convert image buffer to base64
       const newItems = rawItems.map((item) => {
         if (item.image?.data) {
           const base64 = Buffer.from(item.image.data).toString('base64');
-          const mimeType = 'image/jpeg'; // or determine dynamically
+          const mimeType = 'image/jpeg';
           return {
             ...item,
             imageBase64: `data:${mimeType};base64,${base64}`,
           };
         }
-      return item;
+        return item;
       });
 
-      
       if (newItems.length > 0) {
-        setItems(prev => [...prev, ...newItems]);
-        setPage(prev => prev + 1);
+        setItems(prev => reset ? newItems : [...prev, ...newItems]);
+        setPage(prev => reset ? 2 : prev + 1);
       } else {
         setHasMore(false);
       }
@@ -84,13 +94,16 @@ export default function InfiniteTilesPage({ metalType }) {
   };
 
   useEffect(() => {
-    fetchItems();
-  }, []);
+    setPage(1);
+    setItems([]);
+    setHasMore(true);
+    fetchItems(true);
+  }, [filters]);
 
   const renderItem = ({ item }) => (
     <Pressable 
       style={styles.tile}
-      onPress={() =>{
+      onPress={() => {
         console.log("clicked");
         console.log(`${item.id}`);
         router.push(`/item/${item.id}`)
@@ -112,13 +125,14 @@ export default function InfiniteTilesPage({ metalType }) {
 
   return (
     <View style={styles.container}>
+      <FilterBar filters={filters} setFilters={setFilters} />
       <FlatList
         data={items}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        onEndReached={fetchItems}
+        onEndReached={() => fetchItems()}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           loading ? <Text style={styles.loading}>Loading more items...</Text> : null
