@@ -38,8 +38,75 @@ const styles = StyleSheet.create({
   loading: {
     padding: 10,
     textAlign: 'center'
+  },
+  noItemsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  noItemsText: {
+    fontSize: 18,
+    color: theme.colors.text,
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  noItemsSubtext: {
+    fontSize: 14,
+    color: theme.colors.text,
+    textAlign: 'center',
+    marginTop: 5,
+    opacity: 0.7,
   }
 });
+
+const NoItemsFound = ({ filters }) => {
+  const getFilterDescription = () => {
+    const parts = [];
+    if (filters.gender) parts.push(filters.gender);
+    if (filters.ornamentType) parts.push(filters.ornamentType);
+    return parts.join(' ');
+  };
+
+  return (
+    <View style={styles.noItemsContainer}>
+      <Text style={styles.noItemsText}>No items found</Text>
+      <Text style={styles.noItemsSubtext}>
+        {getFilterDescription() ? 
+          `No ${getFilterDescription()} items available at the moment.` :
+          'No items available at the moment.'}
+      </Text>
+    </View>
+  );
+};
+
+const ErrorView = ({ error, onRetry }) => {
+  return (
+    <View style={styles.noItemsContainer}>
+      <Text style={styles.noItemsText}>Something went wrong</Text>
+      <Text style={styles.noItemsSubtext}>
+        {error.includes('500') 
+          ? 'The server encountered an error. Please try again later.'
+          : 'Unable to load items. Please check your connection and try again.'}
+      </Text>
+      <Pressable 
+        onPress={onRetry}
+        style={({ pressed }) => [
+          {
+            backgroundColor: theme.colors.primary,
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderRadius: 8,
+            marginTop: 15,
+            opacity: pressed ? 0.8 : 1
+          }
+        ]}
+      >
+        <Text style={{ color: 'white', fontWeight: '600' }}>Try Again</Text>
+      </Pressable>
+    </View>
+  );
+};
 
 export default function InfiniteTilesPage({ metalType }) {
   const [items, setItems] = useState([]);
@@ -56,6 +123,8 @@ export default function InfiniteTilesPage({ metalType }) {
     if (loading || (!hasMore && !reset)) return;
     
     setLoading(true);
+    setError(null); // Clear any previous errors
+    
     try {
       const response = await fetchOrnaments(
         reset ? 1 : page,
@@ -83,11 +152,19 @@ export default function InfiniteTilesPage({ metalType }) {
       if (newItems.length > 0) {
         setItems(prev => reset ? newItems : [...prev, ...newItems]);
         setPage(prev => reset ? 2 : prev + 1);
+        setHasMore(true);
       } else {
         setHasMore(false);
+        if (reset) {
+          setItems([]);
+        }
       }
     } catch (err) {
-      setError(err.message);
+      console.error('Error fetching items:', err);
+      setError(err.message || 'An unexpected error occurred');
+      if (reset) {
+        setItems([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -118,26 +195,46 @@ export default function InfiniteTilesPage({ metalType }) {
   if (error) {
     return (
       <View style={styles.container}>
-        <Text style={{ color: 'red' }}>Error: {error}</Text>
+        <FilterBar 
+          filters={filters} 
+          setFilters={setFilters} 
+          metalType={metalType}
+        />
+        <ErrorView 
+          error={error} 
+          onRetry={() => {
+            setPage(1);
+            setHasMore(true);
+            fetchItems(true);
+          }} 
+        />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <FilterBar filters={filters} setFilters={setFilters} />
-      <FlatList
-        data={items}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        columnWrapperStyle={styles.row}
-        onEndReached={() => fetchItems()}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          loading ? <Text style={styles.loading}>Loading more items...</Text> : null
-        }
+      <FilterBar 
+        filters={filters} 
+        setFilters={setFilters} 
+        metalType={metalType}
       />
+      {items.length === 0 && !loading ? (
+        <NoItemsFound filters={filters} />
+      ) : (
+        <FlatList
+          data={items}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          columnWrapperStyle={styles.row}
+          onEndReached={() => fetchItems()}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            loading ? <Text style={styles.loading}>Loading more items...</Text> : null
+          }
+        />
+      )}
     </View>
   );
 }

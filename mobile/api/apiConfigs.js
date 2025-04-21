@@ -15,5 +15,6 @@ export const axiosInstance = axios.create({
 
 export const API = {
     METAL: `${BASE_URL}/metal/latest/prices`,
-    FETCH_ORNAMENTS: `${BASE_URL}/fetch-ornaments?page=:page&limit=:limit`
+    FETCH_ORNAMENTS: `${BASE_URL}/fetch-ornaments?page=:page&limit=:limit`,
+    AVAILABLE_ORNAMENT_TYPES: `${BASE_URL}/available-ornament-types`
 };

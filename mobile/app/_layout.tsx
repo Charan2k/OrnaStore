@@ -40,9 +40,7 @@ export default function Layout() {
         <Stack.Screen
           name="item/[id]"
           options={{
-            headerShown: true,
-            headerTitle: "Item Details",
-            headerBackTitle: "Back",
+            headerShown: false,
           }}
         />
       </Stack>

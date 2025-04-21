@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Platform, Pressable, Modal, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import theme from '../theme/colors';
+import { fetchAvailableOrnamentTypes } from '../api/ornamentsApi';
 
 const styles = StyleSheet.create({
   container: {
@@ -201,9 +202,23 @@ const IOSPickerField = ({ title, selectedValue, onSelect, options, showPicker, s
   );
 };
 
-export default function FilterBar({ filters, setFilters }) {
+export default function FilterBar({ filters, setFilters, metalType }) {
   const [showGenderPicker, setShowGenderPicker] = useState(false);
   const [showTypePicker, setShowTypePicker] = useState(false);
+  const [availableTypes, setAvailableTypes] = useState([]);
+
+  useEffect(() => {
+    const loadAvailableTypes = async () => {
+      try {
+        const types = await fetchAvailableOrnamentTypes(metalType);
+        setAvailableTypes(types);
+      } catch (error) {
+        console.error('Error loading available types:', error);
+        setAvailableTypes([]);
+      }
+    };
+    loadAvailableTypes();
+  }, [metalType]);
 
   const genderFilters = [
     { label: 'All', value: '' },
@@ -213,12 +228,10 @@ export default function FilterBar({ filters, setFilters }) {
 
   const ornamentTypeFilters = [
     { label: 'All', value: '' },
-    { label: 'Ring', value: 'ring' },
-    { label: 'Bracelet', value: 'bracelet' },
-    { label: 'Chain', value: 'chain' },
-    { label: 'Necklace', value: 'necklace' },
-    { label: 'Earrings', value: 'earrings' },
-    { label: 'Anklet', value: 'anklet' },
+    ...availableTypes.map(type => ({
+      label: type.charAt(0).toUpperCase() + type.slice(1),
+      value: type
+    }))
   ];
 
   if (Platform.OS === 'ios') {

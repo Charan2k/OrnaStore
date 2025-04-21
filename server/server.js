@@ -13,7 +13,13 @@ app.use(cors());
 app.use(express.json());
 
 const routes = require("./routes");
-app.use("/api", [...Object.values(routes)]);
+
+// Register routes
+app.use("/api/test", routes.testRoutes);
+app.use("/api", routes.metalPriceRoutes);
+app.use("/api/admin/auth", routes.adminAuthRoutes);
+app.use("/api/admin", routes.adminRoutes);
+app.use("/api", routes.ornamentRoutes);
 
 // Sync the database and start the server
 const startServer = async () => {
