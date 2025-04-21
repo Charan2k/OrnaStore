@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GiGoldBar, GiSilverBullet } from "react-icons/gi";
-import { Button, Card, CardContent, Typography, Skeleton, Box } from "@mui/material";
+import { Button, Card, CardContent, Typography, Skeleton, Box, Grid } from "@mui/material";
 import Topbar from "../../components/Topbar/Topbar.jsx";
 import Footer from "../Footer.js";
 import useMetalPrices from "./useMetalPrices.js";
+import PriceHistoryChart from "../../components/PriceHistoryChart";
 
 const Home = () => {
     const navigate = useNavigate();
-    const { prices, loading, error } = useMetalPrices();
+    const { prices, historicalData, loading, error } = useMetalPrices();
     const [showAppBanner, setShowAppBanner] = useState(true);
 
     return (
@@ -67,7 +68,7 @@ const Home = () => {
                 </Box>
             ) : (
                 <Box sx={{ p: 3, mt: 10 }}>
-                    <div style={{ textAlign: "center", maxWidth: "1000px", margin: "0 auto" }}>
+                    <div style={{ textAlign: "center", maxWidth: "1200px", margin: "0 auto" }}>
                         <Typography variant="h3" fontWeight="bold" gutterBottom>
                             Live Metal Prices
                         </Typography>
@@ -85,59 +86,84 @@ const Home = () => {
                                 {error}
                             </Typography>
                         ) : (
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                                gap: "20px",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}>
-                                {/* Gold Card */}
-                                <Card sx={{
-                                    background: "rgba(255, 223, 0, 0.2)",
-                                    backdropFilter: "blur(10px)",
-                                    border: "1px solid rgba(255, 223, 0, 0.4)",
-                                    borderRadius: "16px",
-                                    padding: "20px",
-                                    boxShadow: "0 10px 20px rgba(255, 223, 0, 0.3)",
+                            <>
+                                <div style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                                    gap: "20px",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    marginBottom: "40px"
                                 }}>
-                                    <CardContent>
-                                        <GiGoldBar size={70} color="#FFD700" />
-                                        <Typography variant="h5" fontWeight="bold" mt={2}>
-                                            Gold
-                                        </Typography>
-                                        <Typography variant="h6" fontWeight="bold">
-                                            ₹{prices.gold_price} / gram
-                                        </Typography>
-                                        <Typography variant="caption" color="textSecondary">
-                                            Updated: {new Date(prices.updated_at).toLocaleString()}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
+                                    {/* Gold Card */}
+                                    <Card sx={{
+                                        background: "rgba(255, 223, 0, 0.2)",
+                                        backdropFilter: "blur(10px)",
+                                        border: "1px solid rgba(255, 223, 0, 0.4)",
+                                        borderRadius: "16px",
+                                        padding: "20px",
+                                        boxShadow: "0 10px 20px rgba(255, 223, 0, 0.3)",
+                                    }}>
+                                        <CardContent>
+                                            <GiGoldBar size={70} color="#FFD700" />
+                                            <Typography variant="h5" fontWeight="bold" mt={2}>
+                                                Gold
+                                            </Typography>
+                                            <Typography variant="h6" fontWeight="bold">
+                                                ₹{prices.gold_price} / gram
+                                            </Typography>
+                                            <Typography variant="caption" color="textSecondary">
+                                                Updated: {new Date(prices.updated_at).toLocaleString()}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
 
-                                {/* Silver Card */}
-                                <Card sx={{
-                                    background: "rgba(192, 192, 192, 0.2)",
-                                    backdropFilter: "blur(10px)",
-                                    border: "1px solid rgba(192, 192, 192, 0.4)",
-                                    borderRadius: "16px",
-                                    padding: "20px",
-                                    boxShadow: "0 10px 20px rgba(192, 192, 192, 0.3)",
-                                }}>
-                                    <CardContent>
-                                        <GiSilverBullet size={70} color="#C0C0C0" />
-                                        <Typography variant="h5" fontWeight="bold" mt={2}>
-                                            Silver
-                                        </Typography>
-                                        <Typography variant="h6" fontWeight="bold">
-                                            ₹{prices.silver_price} / gram
-                                        </Typography>
-                                        <Typography variant="caption" color="textSecondary">
-                                            Updated: {new Date(prices.updated_at).toLocaleString()}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                                    {/* Silver Card */}
+                                    <Card sx={{
+                                        background: "rgba(192, 192, 192, 0.2)",
+                                        backdropFilter: "blur(10px)",
+                                        border: "1px solid rgba(192, 192, 192, 0.4)",
+                                        borderRadius: "16px",
+                                        padding: "20px",
+                                        boxShadow: "0 10px 20px rgba(192, 192, 192, 0.3)",
+                                    }}>
+                                        <CardContent>
+                                            <GiSilverBullet size={70} color="#C0C0C0" />
+                                            <Typography variant="h5" fontWeight="bold" mt={2}>
+                                                Silver
+                                            </Typography>
+                                            <Typography variant="h6" fontWeight="bold">
+                                                ₹{prices.silver_price} / gram
+                                            </Typography>
+                                            <Typography variant="caption" color="textSecondary">
+                                                Updated: {new Date(prices.updated_at).toLocaleString()}
+                                            </Typography>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+
+                                {/* Price History Charts */}
+                                <Grid container spacing={3} sx={{ mb: 5 }}>
+                                    <Grid item xs={12} md={6}>
+                                        <PriceHistoryChart 
+                                            data={historicalData.map(item => ({
+                                                date: item.date,
+                                                price: item.gold_price
+                                            }))}
+                                            title="Gold Price History"
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} md={6}>
+                                        <PriceHistoryChart 
+                                            data={historicalData.map(item => ({
+                                                date: item.date,
+                                                price: item.silver_price
+                                            }))}
+                                            title="Silver Price History"
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </>
                         )}
 
                         <Button

@@ -10,4 +10,14 @@ const fetchMetalPrices = async () => {
     }
 };
 
-export { fetchMetalPrices };
+const fetchHistoricalMetalPrices = async () => {
+    try {
+        const response = await axiosInstance.get(API.METAL_HISTORICAL);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching historical metal prices:", error);
+        throw error;
+    }
+};
+
+export { fetchMetalPrices, fetchHistoricalMetalPrices };

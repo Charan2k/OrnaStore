@@ -67,4 +67,33 @@ const getLatestMetalPrices = async (req, res) => {
     }
 };
 
-module.exports = { updateMetalPrices, getLatestMetalPrices };
+const getHistoricalMetalPrices = async (req, res) => {
+    try {
+        const { days = 10 } = req.query;
+        const limit = parseInt(days, 10);
+
+        const historicalPrices = await MetalPrice.findAll({
+            order: [["updated_at", "DESC"]],
+            limit,
+            attributes: ["gold_price", "silver_price", "updated_at"]
+        });
+
+        if (!historicalPrices || historicalPrices.length === 0) {
+            return res.status(404).json({ message: "No historical prices found" });
+        }
+
+        // Format the data for the frontend
+        const formattedData = historicalPrices.map(price => ({
+            gold_price: price.gold_price,
+            silver_price: price.silver_price,
+            date: price.updated_at
+        })).reverse(); // Reverse to get chronological order
+
+        res.json(formattedData);
+    } catch (error) {
+        console.error("Error fetching historical metal prices:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+module.exports = { updateMetalPrices, getLatestMetalPrices, getHistoricalMetalPrices };
