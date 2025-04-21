@@ -25,4 +25,24 @@ const fetchOrnaments = async (req, res) => {
     }
 };
 
-module.exports = { fetchOrnaments };
+const getAvailableOrnamentTypes = async (req, res) => {
+    try {
+        const { metalType } = req.query;
+        const whereConditions = {};
+        if (metalType) whereConditions.metalType = metalType;
+
+        const ornaments = await OrnamentItem.findAll({
+            where: whereConditions,
+            attributes: ['ornamentType'],
+            group: ['ornamentType'],
+            raw: true
+        });
+
+        const types = ornaments.map(item => item.ornamentType);
+        res.json({ types });
+    } catch (error) {
+        res.status(500).json({ error: "Error retrieving ornament types" });
+    }
+};
+
+module.exports = { fetchOrnaments, getAvailableOrnamentTypes };

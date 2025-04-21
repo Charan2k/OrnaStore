@@ -12,8 +12,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Add request logging middleware
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 const routes = require("./routes");
-app.use("/api", [...Object.values(routes)]);
+
+// Register routes
+app.use("/api/test", routes.testRoutes);
+app.use("/api", routes.metalPriceRoutes);
+app.use("/api/admin/auth", routes.adminAuthRoutes);
+app.use("/api/admin", routes.adminRoutes);
+app.use("/api", routes.ornamentRoutes);
 
 // Sync the database and start the server
 const startServer = async () => {
