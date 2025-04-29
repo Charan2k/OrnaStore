@@ -2,6 +2,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const fs = require("fs");
 const { metalPricesCronJob } = require("./cron/metalPricesCronJob.js");
 const sequelize = require("./config/database.js");
 
