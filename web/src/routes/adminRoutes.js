@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import Store from "../redux/Store.js";
 
 const adminRoutes = [
-    <Route path="/admin/login" element={<AdminLogin />} key="admin-login" />,
+    // <Route path="/admin/login" element={<AdminLogin />} key="admin-login" />,
     <Route element={<AdminPrivateRoute />} key="admin-private">
         <Route path="/admin/dashboard" element={<Provider store={Store}><Dashboard /></Provider>} />
     </Route>,
