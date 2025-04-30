@@ -2,7 +2,6 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const fs = require("fs");
 const { metalPricesCronJob } = require("./cron/metalPricesCronJob.js");
 const sequelize = require("./config/database.js");
 
@@ -23,11 +22,8 @@ app.use((req, res, next) => {
 const routes = require("./routes");
 
 // Register routes
-app.use("/api/test", routes.testRoutes);
-app.use("/api", routes.metalPriceRoutes);
-app.use("/api/admin/auth", routes.adminAuthRoutes);
-app.use("/api/admin", routes.adminRoutes);
-app.use("/api", routes.ornamentRoutes);
+const routes = require("./routes");
+app.use("/api", [...Object.values(routes)]);
 
 // Sync the database and start the server
 const startServer = async () => {
