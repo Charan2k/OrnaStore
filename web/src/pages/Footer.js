@@ -1,11 +1,12 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { AppBarColor } from "../constants/colors";
 
 const Footer = () => {
     return (
         <Box
             sx={{
-                background: "#F26E01",
+                background: AppBarColor,
                 color: "white",
                 py: 1,
                 textAlign: "center",
@@ -45,7 +46,7 @@ const Footer = () => {
                     whiteSpace: "nowrap",
                 }}
             >
-                © 2024 All Rights Reserved
+                © 2025 All Rights Reserved
             </Typography>
         </Box>
     );

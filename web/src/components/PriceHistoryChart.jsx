@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {AppBarColor} from '../constants/colors';
 
 const PriceHistoryChart = ({ data, title }) => {
     // Format the data for the chart
@@ -40,7 +41,7 @@ const PriceHistoryChart = ({ data, title }) => {
                             <Line 
                                 type="monotone" 
                                 dataKey="price" 
-                                stroke="#F26E01" 
+                                stroke={AppBarColor}
                                 strokeWidth={2}
                                 dot={{ r: 4 }}
                                 activeDot={{ r: 6 }}

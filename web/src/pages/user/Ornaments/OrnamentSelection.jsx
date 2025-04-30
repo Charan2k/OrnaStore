@@ -17,6 +17,8 @@ import Topbar from "../../../components/Topbar/Topbar";
 import highQualityImage1 from "../../../assets/gold.webp";
 import Footer from "../../Footer";
 import highQualityImage2 from "../../../assets/silver.webp";
+import AppLogo from "../../../assets/logo.jpg";
+import { AppBarColor } from "../../../constants/colors";
 
 const OrnamentSelection = () => {
     const navigate = useNavigate();
@@ -46,7 +48,9 @@ const OrnamentSelection = () => {
             }}
         >
             {/* Topbar */}
-            <Topbar title="Ornament Boutique" bgColor="#F26E01" menuButtons={[{
+            <Topbar title="OrnaWorld" bgColor={AppBarColor} 
+                logo={<img src={AppLogo} alt="Logo" style={{ width: 30, height: 30, borderRadius: '10%' }} />}
+                menuButtons={[{
                 label: "Home",
                 onClick: () => navigate("/"),
             }]} />
@@ -146,7 +150,7 @@ const OrnamentSelection = () => {
                         variant="contained"
                         size={isSmallScreen ? "small" : "large"}
                         sx={{
-                            background: "linear-gradient(45deg, #F26E01, #FF7F50)",
+                            background: "linear-gradient(45deg, {AppBarColor}, #FF7F50)",
                             color: "white",
                             fontWeight: "bold",
                             fontSize: isSmallScreen ? "1rem" : "1.1rem",

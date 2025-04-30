@@ -10,19 +10,6 @@ dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 
-// Read SSL certificates dynamically from environment variables
-let sslOptions = {};
-if (process.env.SSL_KEY_PATH && process.env.SSL_CERT_PATH) {
-    sslOptions = {
-        key: fs.readFileSync(process.env.SSL_KEY_PATH),
-        cert: fs.readFileSync(process.env.SSL_CERT_PATH),
-    };
-
-    // Include CA bundle if it's provided
-    if (process.env.SSL_CA_PATH) {
-        sslOptions.ca = fs.readFileSync(process.env.SSL_CA_PATH);
-    }
-}
 
 app.use(cors());
 app.use(express.json());
@@ -56,16 +43,9 @@ const startServer = async () => {
 
         // Start the Express server
         const PORT = process.env.PORT || 8000;
-        if (Object.keys(sslOptions).length > 0) {
-            const https = require("https");
-            https.createServer(sslOptions, app).listen(443, () => {
-                console.log(`Server running on HTTPS at port 443`);
-            });
-        } else {
-            app.listen(PORT, () => {
-                console.log(`Server running on HTTP at port ${PORT}`);
-            });
-        }
+        app.listen(PORT, () => {
+            console.log(`Server running on HTTP at port ${PORT}`);
+        });
     } catch (error) {
         console.error("Error starting the server:", error);
         process.exit(1); // Exit if there's an error during setup

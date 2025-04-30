@@ -1,1 +1,1 @@
-export const AppBarColor = '#F26E01';
+export const AppBarColor = '#D4AF37';

@@ -5,6 +5,7 @@ import { Button, Card, CardContent, Typography, Skeleton, Box, Grid } from "@mui
 import Topbar from "../../components/Topbar/Topbar.jsx";
 import Footer from "../Footer.js";
 import useMetalPrices from "./useMetalPrices.js";
+import AppLogo from "../../assets/logo.jpg";
 import PriceHistoryChart from "../../components/PriceHistoryChart";
 
 const Home = () => {
@@ -15,11 +16,12 @@ const Home = () => {
     return (
         <>
             <Topbar
-                title="Ornament Boutique"
+                title="OrnaWorld"
                 menuButtons={[
                     { label: "Home", onClick: () => navigate("/") },
                     { label: "Ornaments", onClick: () => navigate("/ornaments") },
                 ]}
+                logo={<img src={AppLogo} alt="Logo" style={{ width: 30, height: 30, borderRadius: '10%' }} />}
             />
 
             {showAppBanner ? (
@@ -168,7 +170,7 @@ const Home = () => {
 
                         <Button
                             variant="contained"
-                            color="warning"
+                            color="primary"
                             sx={{
                                 mt: 5,
                                 fontSize: "18px",
@@ -182,6 +184,10 @@ const Home = () => {
                         >
                             Explore Ornaments →
                         </Button>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
                     </div>
                 </Box>
             )}
