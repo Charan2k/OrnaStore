@@ -6,14 +6,12 @@ import Store from "../redux/Store.js";
 import { Provider } from "react-redux";
 import OrnamentSelection from "../pages/user/Ornaments/OrnamentSelection.jsx";
 import OrnamentDetails from "../pages/user/Ornaments/OrnamentDetails.jsx";
-import AdminLogin from "../pages/admin/AdminLogin.jsx";
 
 const userRoutes = [
     <Route path="/" element={<Home />} />,
     <Route path="/ornaments" element={<OrnamentSelection />} />,
     <Route path="/ornaments/:category/:metalType/:ornamentType" element={<Ornaments />} />,
     <Route path="/ornament/:id" element={<OrnamentDetails />} />,
-    <Route path="/admin/login" element={<AdminLogin />} />
     // <Route path="/ornaments" element={<Provider store={Store}><Ornaments /></Provider>} />,
 ];
 
