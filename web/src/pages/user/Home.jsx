@@ -19,7 +19,7 @@ const Home = () => {
                 title="OrnaWorld"
                 menuButtons={[
                     { label: "Home", onClick: () => navigate("/") },
-                    { label: "Ornaments", onClick: () => navigate("/ornaments") },
+                    { label: "Ornaments", onClick: () => navigate("/#/ornaments") },
                 ]}
                 logo={<img src={AppLogo} alt="Logo" style={{ width: 30, height: 30, borderRadius: '10%' }} />}
             />
@@ -180,7 +180,7 @@ const Home = () => {
                                 textTransform: "none",
                                 boxShadow: "0 5px 15px rgba(255, 165, 0, 0.4)",
                             }}
-                            onClick={() => navigate("/ornaments")}
+                            onClick={() => navigate("/#/ornaments")}
                         >
                             Explore Ornaments →
                         </Button>

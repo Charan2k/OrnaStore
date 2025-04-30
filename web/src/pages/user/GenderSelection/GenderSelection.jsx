@@ -7,7 +7,7 @@ const GenderSelection = () => {
 
     const handleSelectGender = (gender) => {
         localStorage.setItem("selectedGender", gender);
-        navigate("/ornaments");
+        navigate("/#/ornaments");
     };
 
     return (

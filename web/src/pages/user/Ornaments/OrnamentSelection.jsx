@@ -31,7 +31,7 @@ const OrnamentSelection = () => {
 
     const handleNavigate = () => {
         if (gender && ornamentType && metalType) {
-            navigate(`/ornaments/${gender}/${metalType}/${ornamentType}`);
+            navigate(`/#/ornaments/${gender}/${metalType}/${ornamentType}`);
         }
     };
 

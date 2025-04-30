@@ -64,7 +64,7 @@ const OrnamentDetails = () => {
                 onClick: () => navigate("/"),
             },{
                 label: "Ornaments",
-                onClick: () => navigate("/ornaments"),
+                onClick: () => navigate("/#/ornaments"),
             }]} />
 
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh" padding="20px">
