@@ -22,7 +22,6 @@ app.use((req, res, next) => {
 const routes = require("./routes");
 
 // Register routes
-const routes = require("./routes");
 app.use("/api", [...Object.values(routes)]);
 
 // Sync the database and start the server
