@@ -103,7 +103,7 @@ const Ornaments = () => {
                 onClick: () => navigate("/"),
             },{
                 label: "Ornaments",
-                onClick: () => navigate("/#/ornaments"),
+                onClick: () => navigate("/ornaments"),
             }]} />
             <Snackbar
                 open={snackbarOpen}
@@ -250,7 +250,7 @@ const Ornaments = () => {
                                         color="warning"
                                         variant="contained"
                                         startIcon={<VisibilityIcon />}
-                                        onClick={() => navigate(`/#/ornament/${ornament.id}`)}
+                                        onClick={() => navigate(`/ornament/${ornament.id}`)}
                                         size="small"
                                     >
                                         View
